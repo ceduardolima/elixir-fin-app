@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :fin_app, FinApp.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "celc",
+  password: "celc",
   hostname: "localhost",
-  database: "fin_app_dev",
+  database: "fin_app",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
