@@ -22,6 +22,12 @@ config :fin_app, FinAppWeb.Endpoint,
   pubsub_server: FinApp.PubSub,
   live_view: [signing_salt: "1eGpFHKF"]
 
+
+# Configurando o Guardian
+config :fin_app, FinAppWeb.Auth.Guardian,
+  issuer: "fin_app",
+  secret_key: "efdZeJSss+bMxhP9MDDL+9I9qSRAFdzWcQ2uO7suGkKu28p10i0ARkKY9nVDvJ3t"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

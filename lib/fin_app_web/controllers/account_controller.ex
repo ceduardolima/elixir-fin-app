@@ -1,8 +1,9 @@
 defmodule FinAppWeb.AccountController do
   use FinAppWeb, :controller
 
-  alias FinApp.Accounts
-  alias FinApp.Accounts.Account
+  alias FinAppWeb.Auth.{Guardian}
+  alias FinApp.{Accounts, Users}
+  alias FinApp.{Accounts.Account, Users.User}
 
   action_fallback FinAppWeb.FallbackController
 
@@ -12,11 +13,13 @@ defmodule FinAppWeb.AccountController do
   end
 
   def create(conn, %{"account" => account_params}) do
-    with {:ok, %Account{} = account} <- Accounts.create_account(account_params) do
+    with {:ok, %Account{} = account} <- Accounts.create_account(account_params),
+          {:ok, token, _claims} <- Guardian.encode_and_sign(account),
+          {:ok, %User{} = _user} <- Users.create_user(account, account_params)
+    do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/accounts/#{account}")
-      |> render(:show, account: account)
+      |> render(:show_account_token, %{account: account, token: token})
     end
   end
 

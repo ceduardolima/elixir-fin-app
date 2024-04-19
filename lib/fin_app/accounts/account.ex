@@ -16,21 +16,18 @@ defmodule FinApp.Accounts.Account do
 
   @doc false
   def changeset(account, attrs) do
-    value = account
+    account
     |> cast(attrs, [:email, :hash_password])
     |> validate_required([:email, :hash_password])
+    |> unique_constraint(:email)
     |> validate_format(:email, ~r/@/)
     |> put_password_hash()
-
-    Logger.info("Valor changeset: #{inspect(value)}")
-
-    value
   end
 
-  defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{hash_password: hash_password}} = changeset) do
-    value = change(changeset, hash_password: Bcrypt.hash_pwd_salt(hash_password))
-    Logger.info("changeset hash: #{inspect(value)}")
-    value
+  defp put_password_hash(
+         %Ecto.Changeset{valid?: true, changes: %{hash_password: hash_password}} = changeset
+       ) do
+    change(changeset, hash_password: Bcrypt.hash_pwd_salt(hash_password))
   end
 
   defp put_password_hash(changeset) do

@@ -5,7 +5,9 @@ defmodule FinAppWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", FinAppWeb do
+  scope "/", FinAppWeb do
     pipe_through :api
+    post "/accounts", AccountController, :create
+    get "/accounts/:id", AccountController, :show
   end
 end
