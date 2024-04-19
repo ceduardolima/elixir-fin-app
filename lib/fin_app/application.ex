@@ -1,0 +1,34 @@
+defmodule FinApp.Application do
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
+  @moduledoc false
+
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    children = [
+      FinAppWeb.Telemetry,
+      FinApp.Repo,
+      {DNSCluster, query: Application.get_env(:fin_app, :dns_cluster_query) || :ignore},
+      {Phoenix.PubSub, name: FinApp.PubSub},
+      # Start a worker by calling: FinApp.Worker.start_link(arg)
+      # {FinApp.Worker, arg},
+      # Start to serve requests, typically the last entry
+      FinAppWeb.Endpoint
+    ]
+
+    # See https://hexdocs.pm/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: FinApp.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  @impl true
+  def config_change(changed, _new, removed) do
+    FinAppWeb.Endpoint.config_change(changed, removed)
+    :ok
+  end
+end
