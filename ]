@@ -1,6 +1,5 @@
 defmodule FinAppWeb.AccountController do
   use FinAppWeb, :controller
-  import Logger
 
   alias FinAppWeb.Auth.{Guardian, ErrorHandler}
   alias FinApp.{Accounts, Users}
@@ -14,22 +13,23 @@ defmodule FinAppWeb.AccountController do
   end
 
   def sign_in(conn, %{"email" => email, "hash_password" => hash_password}) do
-    case Guardian.authenticate(email, hash_password) do
-      {:ok, account, token} ->
-        conn
-        |> Plug.Conn.put_session(:account_id, account.id)
-        |> put_status(:ok)
-        |> render(:show_account_token, %{account: account, token: token})
+    case Auth.authenticate(email, hash_password) do
+      {:error, :unauthorized} -> raise ErrorHandler.Unauthorized, message: "Não authorizado"
 
-      {:error, :unauthorized} ->
-        raise ErrorHandler.Unauthorized, message: "Não authorizado"
+      {:ok, account, token} ->
+          Plug.Conn.put_session(:account_id, account.id)
+          |> put_status(:ok)
+          |> render(:account_token, %{account: account, token: token})
+        
     end
+      
   end
 
   def create(conn, %{"account" => account_params}) do
     with {:ok, %Account{} = account} <- Accounts.create_account(account_params),
-         {:ok, token, _claims} <- Guardian.encode_and_sign(account),
-         {:ok, %User{} = _user} <- Users.create_user(account, account_params) do
+          {:ok, token, _claims} <- Guardian.encode_and_sign(account),
+          {:ok, %User{} = _user} <- Users.create_user(account, account_params)
+    do
       conn
       |> put_status(:created)
       |> render(:show_account_token, %{account: account, token: token})
