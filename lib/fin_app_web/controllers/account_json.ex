@@ -30,4 +30,10 @@ defmodule FinAppWeb.AccountJSON do
       hash_password: account.hash_password
     }
   end
+
+  def error_message(%{message: message}) do
+    %{
+      message: message
+    }
+  end
 end

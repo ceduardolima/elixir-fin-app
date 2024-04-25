@@ -42,6 +42,27 @@ defmodule FinApp.Accounts do
   end
 
   @doc """
+  Gets a single account. Returns `{:ok, account}` if the account exist.
+  Returns `{:error, :not_found}` if the account not exist.
+
+  ## Examples
+      
+      iex> get_account(valid_id)
+      {:ok, account}
+
+      iex> get_account(invalid_id)
+      {:error, :not_found}
+  """
+  def get_account(id) do
+    account = Repo.get(Account, id)
+
+    case account do
+      nil -> {:error, :not_found}
+      _ -> {:ok, account}
+    end
+  end
+
+  @doc """
   Creates a account.
 
   ## Examples
