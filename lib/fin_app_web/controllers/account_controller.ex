@@ -1,12 +1,26 @@
 defmodule FinAppWeb.AccountController do
   use FinAppWeb, :controller
-  import Logger
 
   alias FinAppWeb.Auth.{Guardian, ErrorHandler}
   alias FinApp.{Accounts, Users}
   alias FinApp.{Accounts.Account, Users.User}
+  import Logger
 
   action_fallback FinAppWeb.FallbackController
+
+  plug :is_authorized_account when action in [:update, :delete]
+
+  defp is_authorized_account(conn, _opts) do
+    %{params: params} = conn
+    account = Accounts.get_account!(params["id"])
+    Logger.info("account: #{inspect(account.id)}")
+
+    if conn.assigns.id == account.id do
+      conn
+    else
+      raise ErrorHandler.Forbidden
+    end
+  end
 
   def index(conn, _params) do
     accounts = Accounts.list_accounts()
@@ -41,11 +55,12 @@ defmodule FinAppWeb.AccountController do
     render(conn, :show, account: account)
   end
 
-  def update(conn, %{"id" => id, "account" => account_params}) do
+  def update_password(conn, %{"id" => id, "hash_password" => password}) do
     account = Accounts.get_account!(id)
 
-    with {:ok, %Account{} = account} <- Accounts.update_account(account, account_params) do
-      render(conn, :show, account: account)
+    with {:ok, %Account{} = _account_updated} <-
+           Accounts.update_account(account, %{hash_password: password}) do
+      send_resp(conn, 200, "Senha atualizada com sucesso!")
     end
   end
 
