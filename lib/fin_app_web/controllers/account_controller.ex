@@ -12,6 +12,7 @@ defmodule FinAppWeb.AccountController do
 
   defp is_authorized_account(conn, _opts) do
     %{params: params} = conn
+
     case Accounts.get_account(params["id"]) do
       {:ok, account} when conn.assigns.account.id == account.id ->
         conn
@@ -36,6 +37,33 @@ defmodule FinAppWeb.AccountController do
 
       {:error, :unauthorized} ->
         raise ErrorHandler.Unauthorized, message: "Não authorizado"
+    end
+  end
+
+  def refresh_session(conn, %{}) do
+    old_token = Guardian.Plug.current_token(conn)
+
+    case Guardian.decode_and_verify(old_token) do
+      {:ok, claims} ->
+        conn |> gen_new_token(old_token, claims)
+
+      {:error, _reason} ->
+        raise ErrorHandler.NotFound
+    end
+  end
+
+  defp gen_new_token(conn, old_token, claims) do
+    case Guardian.resource_from_claims(claims) do
+      {:ok, account} ->
+        {:ok, _old, {new_token, _new_claims}} = Guardian.refresh(old_token)
+
+        conn
+        |> Plug.Conn.put_session(:account_id, account.id)
+        |> put_status(:ok)
+        |> render(:show_account_token, %{account: account, token: new_token})
+
+      {:error, _reason} ->
+        raise ErrorHandler.NotFound
     end
   end
 
