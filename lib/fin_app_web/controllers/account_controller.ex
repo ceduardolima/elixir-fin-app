@@ -4,6 +4,7 @@ defmodule FinAppWeb.AccountController do
   alias FinAppWeb.Auth.{Guardian, ErrorHandler}
   alias FinApp.{Accounts, Users}
   alias FinApp.{Accounts.Account, Users.User}
+  require Logger
 
   action_fallback FinAppWeb.FallbackController
 
@@ -11,15 +12,11 @@ defmodule FinAppWeb.AccountController do
 
   defp is_authorized_account(conn, _opts) do
     %{params: params} = conn
-
     case Accounts.get_account(params["id"]) do
-      {:error, :not_found} ->
-        raise ErrorHandler.Forbidden
-
-      {:ok, account} when conn.assigns.id == account.id ->
+      {:ok, account} when conn.assigns.account.id == account.id ->
         conn
 
-      {:ok, account} when conn.assigns.id != account.id ->
+      _ ->
         raise ErrorHandler.Forbidden
     end
   end
@@ -40,6 +37,18 @@ defmodule FinAppWeb.AccountController do
       {:error, :unauthorized} ->
         raise ErrorHandler.Unauthorized, message: "Não authorizado"
     end
+  end
+
+  def sign_out(%Plug.Conn{request_path: "/accounts/sign_out"} = conn, _params) do
+    Logger.info("\n\n #{inspect(conn)}")
+    account = conn.assigns[:account]
+    token = Guardian.Plug.current_token(conn)
+    Guardian.revoke(token)
+
+    conn
+    |> Plug.Conn.clear_session()
+    |> put_status(:ok)
+    |> render(:show_account_token, %{account: account, token: nil})
   end
 
   def create(conn, %{"account" => account_params}) do

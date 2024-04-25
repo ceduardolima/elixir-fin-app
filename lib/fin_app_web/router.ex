@@ -34,7 +34,8 @@ defmodule FinAppWeb.Router do
 
   scope "/", FinAppWeb do
     pipe_through [:api, :auth]
-    get "/accounts/:id", AccountController, :show
+    get "/accounts/sign_out", AccountController, :sign_out
+    get "/accounts/by_id/:id", AccountController, :show
     post "/accounts/update", AccountController, :update_password
   end
 end
