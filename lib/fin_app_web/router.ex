@@ -38,5 +38,6 @@ defmodule FinAppWeb.Router do
     get "/accounts/by_id/:id", AccountController, :show
     get "/accounts/refresh_session", AccountController, :refresh_session
     post "/accounts/update", AccountController, :update_password
+    put "/users/update", UserController, :update
   end
 end
