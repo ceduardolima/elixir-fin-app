@@ -46,7 +46,7 @@ defmodule FinAppWeb.AccountController do
 
   def refresh_session(conn, %{}) do
     current_token = Guardian.Plug.current_token(conn)
-    {:ok, :account, token} = Guardian.authenticate(current_token)
+    {:ok, account, new_token} = Guardian.authenticate(current_token)
 
     conn
     |> Plug.Conn.put_session(:account_id, account.id)
@@ -74,8 +74,8 @@ defmodule FinAppWeb.AccountController do
   end
 
   def show(conn, %{"id" => id}) do
-    account = Accounts.get_account!(id)
-    render(conn, :show, account: account)
+    account = Accounts.get_full_account(id)
+    render(conn, :full_account, account: account)
   end
 
   def update_password(conn, %{"id" => id, "hash_password" => password}) do

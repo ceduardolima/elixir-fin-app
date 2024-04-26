@@ -15,7 +15,7 @@ defmodule FinAppWeb.UserJSON do
     %{data: data(user)}
   end
 
-  defp data(%User{} = user) do
+  def data(%User{} = user) do
     %{
       id: user.id,
       name: user.name,

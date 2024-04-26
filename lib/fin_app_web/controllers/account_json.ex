@@ -1,5 +1,6 @@
 defmodule FinAppWeb.AccountJSON do
   alias FinApp.Accounts.Account
+  alias FinAppWeb.UserJSON
 
   @doc """
   Renders a list of accounts.
@@ -23,6 +24,14 @@ defmodule FinAppWeb.AccountJSON do
     }
   end
 
+  def full_account(%{account: account}) do
+    %{
+      id: account.id,
+      email: account.email,
+      user: UserJSON.data(account.user)
+    }
+  end
+
   defp data(%Account{} = account) do
     %{
       id: account.id,
@@ -31,9 +40,4 @@ defmodule FinAppWeb.AccountJSON do
     }
   end
 
-  def error_message(%{message: message}) do
-    %{
-      message: message
-    }
-  end
 end
