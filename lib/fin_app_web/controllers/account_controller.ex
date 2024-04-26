@@ -67,12 +67,20 @@ defmodule FinAppWeb.AccountController do
     render(conn, :full_account, account: account)
   end
 
-  def update_password(conn, %{"id" => id, "hash_password" => password}) do
-    account = Accounts.get_account!(id)
+  def current_account(conn, %{}) do
+    conn |> put_status(:ok) |> render(:full_account, %{account: conn.assigns.account})
+  end
 
-    with {:ok, %Account{} = _account_updated} <-
-           Accounts.update_account(account, %{hash_password: password}) do
-      send_resp(conn, 200, "Senha atualizada com sucesso!")
+  def update_password(conn, %{"current_hash" => current_hash, "hash_password" => password}) do
+    case Guardian.validate_password(current_hash, conn.assigns.account.hash_password) do
+      true ->
+        {:ok, account} =
+          Accounts.update_account(conn.assigns.account, %{hash_password: password})
+
+        render(conn, :show, account: account)
+
+      false ->
+        raise ErrorHandler.Unauthorized, message: "Senha incorreta"
     end
   end
 
