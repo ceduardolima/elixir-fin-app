@@ -7,6 +7,8 @@ defmodule FinApp.Expenses.Expense do
   schema "expenses" do
     field :name, :string
     field :value, :decimal
+    belongs_to :user, FinApp.Users.User
+
 
     timestamps(type: :utc_datetime)
   end
@@ -16,5 +18,6 @@ defmodule FinApp.Expenses.Expense do
     expense
     |> cast(attrs, [:name, :value])
     |> validate_required([:name, :value])
+    |> validate_number(:value, greater_than_or_equal_to: 0, message: "O valor não pode ser negativo")
   end
 end

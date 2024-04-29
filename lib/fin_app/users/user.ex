@@ -11,6 +11,7 @@ defmodule FinApp.Users.User do
     field :nickname, :string
     field :birthday, :date
     belongs_to :account, FinApp.Accounts.Account
+    has_many :expense, FinApp.Expenses.Expense
 
     timestamps(type: :utc_datetime)
   end

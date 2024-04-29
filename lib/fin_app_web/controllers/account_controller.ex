@@ -1,15 +1,17 @@
 defmodule FinAppWeb.AccountController do
   use FinAppWeb, :controller
+  import FinAppWeb.Auth.AuthorizedPlug
 
   alias FinAppWeb.Auth.{Guardian, ErrorHandler}
   alias FinApp.{Accounts, Users}
   alias FinApp.{Accounts.Account, Users.User}
-  import FinAppWeb.Auth.AuthorizedPlug
   require Logger
+
+  plug :is_authorized when action in [:update_password, :delete]
+
 
   action_fallback FinAppWeb.FallbackController
 
-  plug :is_authorized when action in [:update_password, :delete]
 
   def index(conn, _params) do
     accounts = Accounts.list_accounts()

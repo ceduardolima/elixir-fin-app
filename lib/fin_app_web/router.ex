@@ -38,6 +38,7 @@ defmodule FinAppWeb.Router do
     get "/accounts/sign_out", AccountController, :sign_out
     get "/accounts/by_id/:id", AccountController, :show
     get "/accounts/refresh_session", AccountController, :refresh_session
+    post "/expenses/create", ExpenseController, :create
     post "/accounts/update", AccountController, :update_password
     put "/users/update", UserController, :update
   end

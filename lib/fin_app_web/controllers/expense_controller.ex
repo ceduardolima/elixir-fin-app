@@ -3,6 +3,10 @@ defmodule FinAppWeb.ExpenseController do
 
   alias FinApp.Expenses
   alias FinApp.Expenses.Expense
+  import FinAppWeb.Auth.AuthorizedPlug
+  require Logger
+
+  plug :is_authorized when action in [:create]
 
   action_fallback FinAppWeb.FallbackController
 
@@ -12,10 +16,10 @@ defmodule FinAppWeb.ExpenseController do
   end
 
   def create(conn, %{"expense" => expense_params}) do
-    with {:ok, %Expense{} = expense} <- Expenses.create_expense(expense_params) do
+    with {:ok, %Expense{} = expense} <-
+           Expenses.create_expense(expense_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/expenses/#{expense}")
       |> render(:show, expense: expense)
     end
   end
