@@ -12,7 +12,7 @@ defmodule FinAppWeb.ExpenseJSON do
   Renders a single expense.
   """
   def show(%{expense: expense}) do
-    %{data: data(expense)}
+    data(expense)
   end
 
   defp data(%Expense{} = expense) do
