@@ -25,4 +25,12 @@ defmodule FinAppWeb.Auth.AuthorizedPlug do
       raise ErrorHandler.Forbidden
     end
   end
+
+  def is_authorized(%{path_params: %{"user_id" => user_id}} = conn, _opts) do
+    if conn.assigns.account.user.id == user_id do
+      conn
+    else
+      raise ErrorHandler.Forbidden
+    end
+  end
 end

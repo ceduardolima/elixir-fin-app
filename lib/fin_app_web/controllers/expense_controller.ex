@@ -6,12 +6,11 @@ defmodule FinAppWeb.ExpenseController do
   import FinAppWeb.Auth.AuthorizedPlug
   require Logger
 
-  plug :is_authorized when action in [:create]
+  plug :is_authorized when action in [:create, :index]
 
   action_fallback FinAppWeb.FallbackController
 
   def index(conn, _params) do
-    Logger.info("user_id: #{conn.assigns.account.user.id}\n\n")
     expenses = Expenses.list_expenses(conn.assigns.account.user.id)
     render(conn, :index, expenses: expenses)
   end

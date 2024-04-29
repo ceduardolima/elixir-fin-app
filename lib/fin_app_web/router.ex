@@ -46,7 +46,7 @@ defmodule FinAppWeb.Router do
     put "/users/update", UserController, :update
 
     # Endpoint dos Expenses 
-    get "/expenses", ExpenseController, :index
+    get "/:user_id/expenses", ExpenseController, :index
     get "/expenses/:id", ExpenseController, :show
     post "/expenses/create", ExpenseController, :create
   end
