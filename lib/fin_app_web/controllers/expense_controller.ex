@@ -11,7 +11,8 @@ defmodule FinAppWeb.ExpenseController do
   action_fallback FinAppWeb.FallbackController
 
   def index(conn, _params) do
-    expenses = Expenses.list_expenses()
+    Logger.info("user_id: #{conn.assigns.account.user.id}\n\n")
+    expenses = Expenses.list_expenses(conn.assigns.account.user.id)
     render(conn, :index, expenses: expenses)
   end
 

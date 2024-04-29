@@ -16,8 +16,8 @@ defmodule FinApp.Expenses.Expense do
   @doc false
   def changeset(expense, attrs) do
     expense
-    |> cast(attrs, [:name, :value])
-    |> validate_required([:name, :value])
+    |> cast(attrs, [:name, :value, :user_id])
+    |> validate_required([:name, :value, :user_id])
     |> validate_number(:value, greater_than_or_equal_to: 0, message: "O valor não pode ser negativo")
   end
 end

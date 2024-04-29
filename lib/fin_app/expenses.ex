@@ -17,8 +17,8 @@ defmodule FinApp.Expenses do
       [%Expense{}, ...]
 
   """
-  def list_expenses do
-    Repo.all(Expense)
+  def list_expenses(user_id) do
+    Expense |> where(user_id: ^user_id) |> Repo.all()
   end
 
   @doc """
