@@ -10,6 +10,14 @@ defmodule FinAppWeb.Auth.AuthorizedPlug do
     end
   end
 
+  def is_authorized(%{params: %{"user_id" => id}} = conn, _opts) do
+    if conn.assigns.account.user.id == id do
+      conn
+    else
+      raise ErrorHandler.Forbidden
+    end
+  end
+
   def is_authorized(%{params: %{"user" => params}} = conn, _opts) do
     if conn.assigns.account.user.id == params["id"] do
       conn
@@ -26,11 +34,7 @@ defmodule FinAppWeb.Auth.AuthorizedPlug do
     end
   end
 
-  def is_authorized(%{path_params: %{"user_id" => user_id}} = conn, _opts) do
-    if conn.assigns.account.user.id == user_id do
-      conn
-    else
-      raise ErrorHandler.Forbidden
-    end
+  def is_authorized(_conn, _opts) do
+    raise ErrorHandler.Forbidden
   end
 end

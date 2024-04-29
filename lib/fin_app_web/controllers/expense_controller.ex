@@ -6,7 +6,7 @@ defmodule FinAppWeb.ExpenseController do
   import FinAppWeb.Auth.AuthorizedPlug
   require Logger
 
-  plug :is_authorized when action in [:create, :index]
+  plug :is_authorized when action in [:create, :index, :upate]
 
   action_fallback FinAppWeb.FallbackController
 
@@ -29,8 +29,10 @@ defmodule FinAppWeb.ExpenseController do
     render(conn, :show, expense: expense)
   end
 
-  def update(conn, %{"id" => id, "expense" => expense_params}) do
-    expense = Expenses.get_expense!(id)
+  def update(conn, %{"expense" => expense_params}) do
+    Logger.info("inicio\n\n")
+    expense = Expenses.get_expense!(expense_params["id"])
+    Logger.info("#{inspect(expense)}")
 
     with {:ok, %Expense{} = expense} <- Expenses.update_expense(expense, expense_params) do
       render(conn, :show, expense: expense)
