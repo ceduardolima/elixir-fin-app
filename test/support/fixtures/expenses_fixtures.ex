@@ -18,4 +18,18 @@ defmodule FinApp.ExpensesFixtures do
 
     expense
   end
+
+  @doc """
+  Generate a user_expense.
+  """
+  def user_expense_fixture(attrs \\ %{}) do
+    {:ok, user_expense} =
+      attrs
+      |> Enum.into(%{
+
+      })
+      |> FinApp.Expenses.create_user_expense()
+
+    user_expense
+  end
 end
