@@ -6,7 +6,7 @@ defmodule FinAppWeb.ExpenseController do
   import FinAppWeb.Auth.AuthorizedPlug
   require Logger
 
-  plug :is_authorized when action in [:create, :index, :upate]
+  plug :is_authorized when action in [:create, :index, :upate, :delete]
 
   action_fallback FinAppWeb.FallbackController
 
@@ -39,8 +39,8 @@ defmodule FinAppWeb.ExpenseController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    expense = Expenses.get_expense!(id)
+  def delete(conn, %{"expense" => expense_params}) do
+    expense = Expenses.get_expense!(expense_params["id"])
 
     with {:ok, %Expense{}} <- Expenses.delete_expense(expense) do
       send_resp(conn, :no_content, "")

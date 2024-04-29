@@ -50,5 +50,6 @@ defmodule FinAppWeb.Router do
     get "/expenses/:id", ExpenseController, :show
     post "/expenses/create", ExpenseController, :create
     put "/expenses/update", ExpenseController, :update
+    delete "/expenses", ExpenseController, :delete
   end
 end
