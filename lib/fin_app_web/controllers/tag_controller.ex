@@ -3,6 +3,7 @@ defmodule FinAppWeb.TagController do
 
   alias FinApp.Tags
   alias FinApp.Tags.Tag
+  require Logger
 
   action_fallback FinAppWeb.FallbackController
 
@@ -11,29 +12,37 @@ defmodule FinAppWeb.TagController do
     render(conn, :index, tags: tags)
   end
 
-  def create(conn, %{"tag" => tag_params}) do
+  @doc """
+    Json de request:
+    {
+      color: "#FF01ABF5",
+      name: "Tag 1",
+      expense_id: "abcdef-01"
+    }
+  """
+  def create(conn, %{"user_id" => user_id, "tag" => tag_params}) do
     with {:ok, %Tag{} = tag} <- Tags.create_tag(tag_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/tags/#{tag}")
+      |> put_resp_header("location", ~p"/#{user_id}/tags/#{tag.id}")
       |> render(:show, tag: tag)
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"tag_id" => id}) do
     tag = Tags.get_tag!(id)
     render(conn, :show, tag: tag)
   end
 
-  def update(conn, %{"id" => id, "tag" => tag_params}) do
+  def update(conn, %{"tag_id" => id, "tag" => tag_params}) do
     tag = Tags.get_tag!(id)
 
     with {:ok, %Tag{} = tag} <- Tags.update_tag(tag, tag_params) do
-      render(conn, :show, tag: tag)
+      conn |> put_status(:ok) |> render(:show, tag: tag)
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"tag_id" => id}) do
     tag = Tags.get_tag!(id)
 
     with {:ok, %Tag{}} <- Tags.delete_tag(tag) do

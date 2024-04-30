@@ -51,5 +51,11 @@ defmodule FinAppWeb.Router do
     post "/expenses/create", ExpenseController, :create
     put "/expenses/update", ExpenseController, :update
     delete "/expenses", ExpenseController, :delete
+
+    # Endpoint das Tags
+    post "/:user_id/tags", TagController, :create
+    get "/:user_id/tags/:tag_id", TagController, :show
+    put "/:user_id/tags/:tag_id", TagController, :update
+    delete "/:user_id/tags/:tag_id", TagController, :delete
   end
 end
