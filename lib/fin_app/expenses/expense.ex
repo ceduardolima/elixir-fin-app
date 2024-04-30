@@ -8,7 +8,7 @@ defmodule FinApp.Expenses.Expense do
     field :name, :string
     field :value, :decimal
     belongs_to :user, FinApp.Users.User
-
+    has_many :tag_expense, FinApp.TagsExpenses.TagExpense
 
     timestamps(type: :utc_datetime)
   end

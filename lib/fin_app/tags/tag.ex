@@ -7,6 +7,7 @@ defmodule FinApp.Tags.Tag do
   schema "tags" do
     field :name, :string
     field :color, :string
+    has_many :tag_expense, FinApp.TagsExpenses.TagExpense
 
     timestamps(type: :utc_datetime)
   end
