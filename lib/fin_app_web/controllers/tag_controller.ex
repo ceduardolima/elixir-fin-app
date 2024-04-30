@@ -3,7 +3,10 @@ defmodule FinAppWeb.TagController do
 
   alias FinApp.Tags
   alias FinApp.Tags.Tag
+  import FinAppWeb.Auth.AuthorizedPlug
   require Logger
+
+  plug :is_authorized 
 
   action_fallback FinAppWeb.FallbackController
 
