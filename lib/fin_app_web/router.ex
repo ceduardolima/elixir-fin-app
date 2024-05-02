@@ -57,5 +57,7 @@ defmodule FinAppWeb.Router do
     get "/:user_id/tags/:tag_id", TagController, :show
     put "/:user_id/tags/:tag_id", TagController, :update
     delete "/:user_id/tags/:tag_id", TagController, :delete
+
+    post "/:user_id/tags/relation", TagExpenseController, :create
   end
 end

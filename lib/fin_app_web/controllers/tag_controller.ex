@@ -2,11 +2,13 @@ defmodule FinAppWeb.TagController do
   use FinAppWeb, :controller
 
   alias FinApp.Tags
+  alias FinApp.TagsExpenses.TagExpense
   alias FinApp.Tags.Tag
+  alias FinApp.Expenses
   import FinAppWeb.Auth.AuthorizedPlug
   require Logger
 
-  plug :is_authorized 
+  plug :is_authorized
 
   action_fallback FinAppWeb.FallbackController
 
@@ -31,6 +33,7 @@ defmodule FinAppWeb.TagController do
       |> render(:show, tag: tag)
     end
   end
+
 
   def show(conn, %{"tag_id" => id}) do
     tag = Tags.get_tag!(id)

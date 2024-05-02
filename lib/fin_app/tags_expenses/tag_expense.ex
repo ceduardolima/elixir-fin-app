@@ -14,7 +14,7 @@ defmodule FinApp.TagsExpenses.TagExpense do
   @doc false
   def changeset(tag_expense, attrs) do
     tag_expense
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:tag_id, :expense_id])
+    |> validate_required([:tag_id, :expense_id])
   end
 end

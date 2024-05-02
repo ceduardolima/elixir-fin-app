@@ -12,12 +12,14 @@ defmodule FinAppWeb.TagExpenseJSON do
   Renders a single tag_expense.
   """
   def show(%{tag_expense: tag_expense}) do
-    %{data: data(tag_expense)}
+    %{tag_expense: data(tag_expense)}
   end
 
   defp data(%TagExpense{} = tag_expense) do
     %{
-      id: tag_expense.id
+      id: tag_expense.id,
+      tag_id: tag_expense.tag_id,
+      expense_id: tag_expense.expense_id,
     }
   end
 end

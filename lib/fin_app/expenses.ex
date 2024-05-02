@@ -37,6 +37,11 @@ defmodule FinApp.Expenses do
   """
   def get_expense!(id), do: Repo.get!(Expense, id)
 
+  def exist_expense(id) do
+    query = from p in Expense, where: p.id == ^id
+    Repo.exists?(query)
+  end
+
   @doc """
   Creates a expense.
 

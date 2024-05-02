@@ -37,6 +37,13 @@ defmodule FinApp.Tags do
   """
   def get_tag!(id), do: Repo.get!(Tag, id)
 
+
+  def exist_tag(id) do
+    query = from p in Tag, where: p.id == ^id
+    Repo.exists?(query)
+  end
+
+
   @doc """
   Creates a tag.
 

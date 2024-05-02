@@ -20,6 +20,11 @@ defmodule FinApp.TagsExpensesTest do
       assert TagsExpenses.get_tag_expense!(tag_expense.id) == tag_expense
     end
 
+    test "exist_tag_expense/1 returns if the exists a tag_expenses with the given id" do
+      tag_expense = tag_expense_fixture()
+      assert TagsExpenses.exist_tag_expense(tag_expense.id) == :ok
+    end
+
     test "create_tag_expense/1 with valid data creates a tag_expense" do
       valid_attrs = %{}
 

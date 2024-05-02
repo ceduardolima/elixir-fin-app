@@ -1,9 +1,12 @@
 defmodule FinAppWeb.TagExpenseController do
   use FinAppWeb, :controller
 
+  alias FinApp.Tags
+  alias FinApp.Expenses
   alias FinApp.TagsExpenses
   alias FinApp.TagsExpenses.TagExpense
 
+  require Logger
   action_fallback FinAppWeb.FallbackController
 
   def index(conn, _params) do
@@ -11,12 +14,16 @@ defmodule FinAppWeb.TagExpenseController do
     render(conn, :index, tags_expenses: tags_expenses)
   end
 
-  def create(conn, %{"tag_expense" => tag_expense_params}) do
-    with {:ok, %TagExpense{} = tag_expense} <- TagsExpenses.create_tag_expense(tag_expense_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/tags_expenses/#{tag_expense}")
-      |> render(:show, tag_expense: tag_expense)
+  def create(conn, %{"tag_id" => tag_id, "expense_id" => expense_id} = params) do 
+    Logger.info(inspect(params))
+    with true <- Tags.exist_tag(tag_id),
+         true <- Expenses.exist_expense(expense_id),
+         {:ok, %TagExpense{} = tag_expense} <-
+           TagsExpenses.create_tag_expense(params) do
+      conn |> put_status(:ok) |> render(:show, tag_expense: tag_expense)
+    else
+      false -> conn |> send_resp(:not_found, "Tag ou Expense não encontrada")
+      {:error, %Ecto.Changeset{}} -> conn |> send_resp(:not_found, "Falha ao criar a tag_expense")
     end
   end
 
@@ -28,7 +35,8 @@ defmodule FinAppWeb.TagExpenseController do
   def update(conn, %{"id" => id, "tag_expense" => tag_expense_params}) do
     tag_expense = TagsExpenses.get_tag_expense!(id)
 
-    with {:ok, %TagExpense{} = tag_expense} <- TagsExpenses.update_tag_expense(tag_expense, tag_expense_params) do
+    with {:ok, %TagExpense{} = tag_expense} <-
+           TagsExpenses.update_tag_expense(tag_expense, tag_expense_params) do
       render(conn, :show, tag_expense: tag_expense)
     end
   end
