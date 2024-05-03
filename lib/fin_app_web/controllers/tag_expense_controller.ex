@@ -9,11 +9,6 @@ defmodule FinAppWeb.TagExpenseController do
   require Logger
   action_fallback FinAppWeb.FallbackController
 
-  def index(conn, _params) do
-    tags_expenses = TagsExpenses.list_tags_expenses()
-    render(conn, :index, tags_expenses: tags_expenses)
-  end
-
   def create(conn, %{"tag_id" => tag_id, "expense_id" => expense_id} = params) do 
     Logger.info(inspect(params))
     with true <- Tags.exist_tag(tag_id),
@@ -27,21 +22,7 @@ defmodule FinAppWeb.TagExpenseController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    tag_expense = TagsExpenses.get_tag_expense!(id)
-    render(conn, :show, tag_expense: tag_expense)
-  end
-
-  def update(conn, %{"id" => id, "tag_expense" => tag_expense_params}) do
-    tag_expense = TagsExpenses.get_tag_expense!(id)
-
-    with {:ok, %TagExpense{} = tag_expense} <-
-           TagsExpenses.update_tag_expense(tag_expense, tag_expense_params) do
-      render(conn, :show, tag_expense: tag_expense)
-    end
-  end
-
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"relation_id" => id}) do
     tag_expense = TagsExpenses.get_tag_expense!(id)
 
     with {:ok, %TagExpense{}} <- TagsExpenses.delete_tag_expense(tag_expense) do

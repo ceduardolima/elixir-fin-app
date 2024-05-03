@@ -60,5 +60,6 @@ defmodule FinAppWeb.Router do
 
     post "/:user_id/tags/relation", TagExpenseController, :create
     get "/:user_id/tags/expense/:expense_id", TagController, :show_tags_from_expense
+    delete "/:user_id/tags/expense/:relation_id", TagController, :delete
   end
 end
