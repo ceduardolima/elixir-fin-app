@@ -34,10 +34,15 @@ defmodule FinAppWeb.TagController do
     end
   end
 
-
   def show(conn, %{"tag_id" => id}) do
     tag = Tags.get_tag!(id)
+    Logger.info(inspect(tag))
     render(conn, :show, tag: tag)
+  end
+
+  def show_tags_from_expense(conn, %{"expense_id" => id}) do
+    tags = FinApp.TagsExpenses.get_tags_from_expense(id)
+    render(conn, :index, tags: tags)
   end
 
   def update(conn, %{"tag_id" => id, "tag" => tag_params}) do

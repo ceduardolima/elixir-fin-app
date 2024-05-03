@@ -7,6 +7,9 @@ defmodule FinApp.TagsExpenses do
   alias FinApp.Repo
 
   alias FinApp.TagsExpenses.TagExpense
+  alias FinApp.TagsExpenses.TagExpense
+  alias FinApp.Tags.Tag
+  require Logger
 
   @doc """
   Returns the list of tags_expenses.
@@ -53,6 +56,21 @@ defmodule FinApp.TagsExpenses do
     %TagExpense{}
     |> TagExpense.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def get_tags_from_expense(expense_id) do
+    try do
+      subquery =
+        from tags in Tag,
+          join: tag_expense in TagExpense,
+          on: tag_expense.tag_id == tags.id,
+          where: tag_expense.expense_id == ^expense_id,
+          select: tags
+
+      Repo.all(subquery)
+    rescue
+      _ -> []
+    end
   end
 
   @doc """
