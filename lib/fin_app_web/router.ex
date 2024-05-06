@@ -43,14 +43,14 @@ defmodule FinAppWeb.Router do
     post "/accounts/update", AccountController, :update_password
 
     # Endpoint dos Users
-    put "/users/update", UserController, :update
+    put "/:user_id/users/update", UserController, :update
 
     # Endpoint dos Expenses 
     get "/:user_id/expenses", ExpenseController, :index
-    get "/expenses/:id", ExpenseController, :show
-    post "/expenses/create", ExpenseController, :create
-    put "/expenses/update", ExpenseController, :update
-    delete "/expenses", ExpenseController, :delete
+    get "/:user_id/expenses/:id", ExpenseController, :show
+    post "/:user_id/expenses/create", ExpenseController, :create
+    put "/:user_id/expenses/update", ExpenseController, :update
+    delete "/:user_id/expenses", ExpenseController, :delete
 
     # Endpoint das Tags
     post "/:user_id/tags", TagController, :create
